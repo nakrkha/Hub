@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hub-backend
+    runtime: node
+    rootDir: hub-backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: JWT_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: NODE_VERSION
+        value: 20.20.0

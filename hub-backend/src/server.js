@@ -16,11 +16,30 @@ const { signToken } = require('./utils/jwt');
 const app = express();
 
 const localOriginPattern = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/;
+const allowedOrigins = String(process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function matchesAllowedOrigin(origin) {
+  return allowedOrigins.some((allowedOrigin) => {
+    if (!allowedOrigin.includes('*')) {
+      return allowedOrigin === origin;
+    }
+
+    const pattern = `^${escapeRegex(allowedOrigin).replace('\\*', '[^.]+')}$`;
+    return new RegExp(pattern).test(origin);
+  });
+}
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || localOriginPattern.test(origin)) {
+      if (!origin || localOriginPattern.test(origin) || matchesAllowedOrigin(origin)) {
         callback(null, true);
         return;
       }
