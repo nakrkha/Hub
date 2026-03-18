@@ -1,7 +1,20 @@
 [build]
-  base = "hub-frontend"
-  command = "npm run build"
-  publish = "dist/hub-frontend/browser"
+  command = "npm ci --prefix hub-backend && npm ci --prefix hub-frontend && npm run build --prefix hub-frontend"
+  publish = "hub-frontend/dist/hub-frontend/browser"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "hub-backend/netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["express", "bcryptjs", "cors", "jsonwebtoken", "@netlify/blobs", "serverless-http"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
 
 [[redirects]]
   from = "/*"

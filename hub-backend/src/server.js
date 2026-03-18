@@ -20,13 +20,16 @@ const allowedOrigins = String(process.env.ALLOWED_ORIGINS ?? '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
+const netlifyOrigins = [process.env.URL, process.env.DEPLOY_PRIME_URL, process.env.DEPLOY_URL]
+  .map((origin) => String(origin ?? '').trim())
+  .filter(Boolean);
 
 function escapeRegex(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function matchesAllowedOrigin(origin) {
-  return allowedOrigins.some((allowedOrigin) => {
+  return [...allowedOrigins, ...netlifyOrigins].some((allowedOrigin) => {
     if (!allowedOrigin.includes('*')) {
       return allowedOrigin === origin;
     }
