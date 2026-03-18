@@ -1,0 +1,42 @@
+<section class="auth-shell">
+  <div class="auth-layout">
+    <div class="auth-card">
+      <div class="auth-card__brand">
+        <div>
+          <h2>Iniciar sesión</h2>
+          <p class="auth-card__subtitle">Accede a tu espacio privado para continuar.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="enviarFormulario()" novalidate>
+        <label class="field">
+          <span>Usuario</span>
+          <input type="text" formControlName="identifier" placeholder="noha" />
+          <small *ngIf="loginForm.controls.identifier.touched && loginForm.controls.identifier.invalid">
+            Introduce tu usuario o email.
+          </small>
+        </label>
+
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" formControlName="password" placeholder="2026" />
+          <small *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+            La contraseña debe tener al menos 4 caracteres.
+          </small>
+        </label>
+
+        <p class="login-hint">Acceso actual: <strong>noha</strong> / <strong>2026</strong></p>
+
+        <p class="message message--error" *ngIf="mensajeError">{{ mensajeError }}</p>
+
+      <button class="button button--primary button--block" type="submit" [disabled]="enviandoFormulario">
+        {{ enviandoFormulario ? 'Entrando...' : 'Entrar al hub' }}
+      </button>
+    </form>
+  </div>
+
+    <aside class="auth-visual">
+      <img class="auth-visual__logo" src="/images/noakr%20home.png" alt="Noakr Home" />
+    </aside>
+  </div>
+</section>

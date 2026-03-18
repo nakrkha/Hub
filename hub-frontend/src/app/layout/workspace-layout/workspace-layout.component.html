@@ -1,0 +1,94 @@
+<div class="workspace-shell" [class.workspace-shell--sidebar-hidden]="!sidebarAbierto">
+  <aside id="workspace-sidebar" class="workspace-sidebar">
+    <nav class="workspace-nav" aria-label="Navegación principal">
+      <a
+        class="workspace-nav__link"
+        routerLink="/dashboard"
+        routerLinkActive="workspace-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span class="workspace-nav__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4A1.5 1.5 0 0 1 18.5 11h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z"
+            />
+          </svg>
+        </span>
+        <strong>Board</strong>
+      </a>
+
+      <a
+        class="workspace-nav__link"
+        routerLink="/herramientas"
+        routerLinkActive="workspace-nav__link--active"
+      >
+        <span class="workspace-nav__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M19.14 12.94a7.43 7.43 0 0 0 .05-.94 7.43 7.43 0 0 0-.05-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.2 7.2 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.58.22-1.13.53-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.43 7.43 0 0 0-.05.94 7.43 7.43 0 0 0 .05.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.5.41 1.05.72 1.63.94l.36 2.54a.5.5 0 0 0 .49.42h3.8a.5.5 0 0 0 .49-.42l.36-2.54c.58-.22 1.13-.53 1.63-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64zM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5"
+            />
+          </svg>
+        </span>
+        <strong>Herramientas</strong>
+      </a>
+    </nav>
+  </aside>
+
+  <button
+    *ngIf="viewportMovil && sidebarAbierto"
+    class="workspace-overlay"
+    type="button"
+    aria-label="Cerrar sidebar"
+    (click)="cerrarSidebar()"
+  ></button>
+
+  <div class="workspace-main">
+    <header class="workspace-header">
+      <div class="workspace-brand">
+        <button
+          class="workspace-sidebar-toggle"
+          type="button"
+          aria-controls="workspace-sidebar"
+          [attr.aria-expanded]="sidebarAbierto"
+          [attr.aria-label]="sidebarAbierto ? 'Ocultar sidebar' : 'Mostrar sidebar'"
+          (click)="alternarSidebar()"
+        >
+          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+            <path
+              d="M4 6.75A.75.75 0 0 1 4.75 6h14.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 6.75m0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H4.75A.75.75 0 0 1 4 12m0 5.25a.75.75 0 0 1 .75-.75h9.5a.75.75 0 0 1 0 1.5h-9.5a.75.75 0 0 1-.75-.75"
+            />
+          </svg>
+        </button>
+        <img src="/images/noakr.png" alt="Logo nakr" class="workspace-brand__logo" />
+        <div>
+          <strong>nakr</strong>
+          <span>{{ etiquetaSeccion }}</span>
+        </div>
+      </div>
+
+      <div class="workspace-user">
+        <button class="workspace-user__trigger" type="button" (click)="alternarMenuUsuario($event)">
+          <span class="workspace-user__avatar">
+            {{ obtenerIniciales(usuarioActual?.name || 'Usuario') }}
+          </span>
+          <span class="workspace-user__meta">
+            <strong>{{ usuarioActual?.name || 'Usuario' }}</strong>
+            <small>Cuenta</small>
+          </span>
+        </button>
+
+        <div *ngIf="menuUsuarioAbierto" class="workspace-user__menu">
+          <strong>{{ usuarioActual?.name || 'Usuario' }}</strong>
+          <span>{{ usuarioActual?.email || 'Sin correo disponible' }}</span>
+          <button class="button button--ghost" type="button" (click)="cerrarSesion()">
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

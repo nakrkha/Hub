@@ -1,0 +1,22 @@
+<article
+  class="project-card"
+  tabindex="0"
+  role="button"
+  (click)="abrirProyecto()"
+  (keyup.enter)="abrirProyecto()"
+>
+  <div class="project-card__media">
+    <img [src]="proyecto.imagen" [alt]="proyecto.nombre" class="project-card__image" />
+    <span class="project-card__tag">Board</span>
+  </div>
+
+  <div class="project-card__content">
+    <div class="project-card__meta">
+      <span>Proyecto {{ proyecto.id }}</span>
+      <strong>Abrir</strong>
+    </div>
+    <h3>{{ proyecto.nombre }}</h3>
+    <p *ngIf="proyecto.descripcion">{{ proyecto.descripcion }}</p>
+    <span class="project-card__cta">Entrar al espacio</span>
+  </div>
+</article>

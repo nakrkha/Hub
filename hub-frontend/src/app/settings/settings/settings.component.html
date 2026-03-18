@@ -1,0 +1,369 @@
+<div class="tools-page">
+  <p class="message message--error" *ngIf="mensajeError">{{ mensajeError }}</p>
+  <p class="message message--success" *ngIf="mensajeOk">{{ mensajeOk }}</p>
+
+  <section *ngIf="vistaActiva === 'inicio'" class="tools-grid">
+    <button class="tool-entry" type="button" (click)="abrirVista('proyectos')">
+      <span class="tool-entry__eyebrow">Herramientas</span>
+      <span class="tool-entry__title">
+        <span class="tool-entry__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4A1.5 1.5 0 0 1 18.5 11h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z"
+            />
+          </svg>
+        </span>
+        <strong>Proyectos</strong>
+      </span>
+      <p>Añadir proyectos, editar título, imagen y URL, o borrar los que ya no quieras.</p>
+      <span class="tool-entry__meta">
+        {{ cargandoProyectos ? 'Cargando proyectos...' : `${proyectos.length} proyectos` }}
+      </span>
+    </button>
+
+    <button class="tool-entry" type="button" (click)="abrirVista('cuentas')">
+      <span class="tool-entry__eyebrow">Herramientas</span>
+      <span class="tool-entry__title">
+        <span class="tool-entry__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path
+              d="M10 11.25A3.75 3.75 0 1 1 10 3.75a3.75 3.75 0 0 1 0 7.5m0-6A2.25 2.25 0 1 0 10 9.75a2.25 2.25 0 0 0 0-4.5m7.25 1a.75.75 0 0 1 .75.75v1.75h1.75a.75.75 0 0 1 0 1.5H18v1.75a.75.75 0 0 1-1.5 0V10.25h-1.75a.75.75 0 0 1 0-1.5h1.75V7a.75.75 0 0 1 .75-.75M3.75 18A4.75 4.75 0 0 1 8.5 13.25h3a4.75 4.75 0 0 1 4.75 4.75.75.75 0 0 1-.75.75H4.5a.75.75 0 0 1-.75-.75m1.59-.75h9.32A3.25 3.25 0 0 0 11.5 14.75h-3a3.25 3.25 0 0 0-3.16 2.5"
+            />
+          </svg>
+        </span>
+        <strong>Añadir cuentas</strong>
+      </span>
+      <p>Crear usuarios nuevos, revisar la tabla actual, editar datos o eliminar cuentas.</p>
+      <span class="tool-entry__meta">
+        {{ cargandoUsuarios ? 'Cargando cuentas...' : `${usuarios.length} cuentas` }}
+      </span>
+    </button>
+  </section>
+
+  <article *ngIf="vistaActiva === 'proyectos'" class="settings-card settings-card--detail">
+    <div class="detail-top">
+      <div class="card-header">
+        <div>
+          <p class="card-header__eyebrow">Herramientas</p>
+          <h2 class="card-header__title">
+            <span class="card-header__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4A1.5 1.5 0 0 1 18.5 11h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z"
+                />
+              </svg>
+            </span>
+            Proyectos
+          </h2>
+        </div>
+        <p class="settings-card__subtitle">
+          Aquí puedes crear proyectos nuevos y mantener los que ya aparecen en tu Board.
+        </p>
+      </div>
+
+      <button class="button button--secondary" type="button" (click)="volverAInicio()">
+        Volver
+      </button>
+    </div>
+
+    <section class="card-section">
+      <div class="section-top">
+        <div>
+          <h3>Añadir proyecto</h3>
+          <p class="settings-card__subtitle">
+            Crea un acceso nuevo para que aparezca después en tu Board.
+          </p>
+        </div>
+      </div>
+
+      <form class="create-grid" [formGroup]="projectForm" (ngSubmit)="crearProyecto()" novalidate>
+        <label class="field">
+          <span>Portada</span>
+          <input type="file" accept="image/*" (change)="manejarPortada($event)" />
+          <small *ngIf="nombreArchivoPortada">
+            {{ cargandoPortada ? 'Cargando portada...' : nombreArchivoPortada }}
+          </small>
+        </label>
+
+        <label class="field">
+          <span>Nombre del proyecto</span>
+          <input type="text" formControlName="nombre" placeholder="Habita, Portfolio, App..." />
+          <small *ngIf="projectForm.controls.nombre.touched && projectForm.controls.nombre.invalid">
+            El nombre debe tener al menos 2 caracteres.
+          </small>
+        </label>
+
+        <label class="field">
+          <span>URL</span>
+          <input type="text" formControlName="url" placeholder="https://tu-proyecto.com" />
+          <small *ngIf="projectForm.controls.url.touched && projectForm.controls.url.invalid">
+            El link es obligatorio.
+          </small>
+        </label>
+
+        <label class="field field--full">
+          <span>Descripción</span>
+          <textarea
+            formControlName="descripcion"
+            rows="3"
+            placeholder="Qué hace este proyecto y por qué debe estar visible en el Board"
+          ></textarea>
+        </label>
+
+        <div class="actions-row">
+          <button
+            class="button button--primary"
+            type="submit"
+            [disabled]="guardandoNuevoProyecto || cargandoPortada"
+          >
+            {{ guardandoNuevoProyecto ? 'Guardando...' : 'Guardar en Board' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card-section">
+      <div class="section-top">
+        <div>
+          <h3>Proyectos actuales</h3>
+          <p class="settings-card__subtitle">
+            Edita lo que ya esta publicado y borra lo que no necesites.
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="cargandoProyectos" class="mini-state">Cargando proyectos...</div>
+
+      <div *ngIf="!cargandoProyectos && !proyectos.length" class="mini-state">
+        No hay proyectos todavía.
+      </div>
+
+      <div *ngIf="!cargandoProyectos && proyectos.length" class="project-settings-list">
+        <div class="project-settings-item" *ngFor="let proyecto of proyectos">
+          <div class="project-settings-item__preview">
+            <img [src]="projectDrafts[proyecto.id]?.imagen || proyecto.imagen" [alt]="proyecto.nombre" />
+          </div>
+
+          <div class="project-settings-item__fields">
+            <label class="field">
+              <span>Título</span>
+              <input
+                type="text"
+                [value]="projectDrafts[proyecto.id]?.nombre"
+                (input)="actualizarBorradorProyecto(proyecto.id, 'nombre', $any($event.target).value)"
+                placeholder="Nombre del proyecto"
+              />
+            </label>
+
+            <label class="field">
+              <span>URL</span>
+              <input
+                type="text"
+                [value]="projectDrafts[proyecto.id]?.url"
+                (input)="actualizarBorradorProyecto(proyecto.id, 'url', $any($event.target).value)"
+                placeholder="https://tu-proyecto.com"
+              />
+            </label>
+
+            <label class="field">
+              <span>Imagen</span>
+              <input type="file" accept="image/*" (change)="manejarPortadaProyecto(proyecto.id, $event)" />
+              <small *ngIf="projectImageNames[proyecto.id]">
+                {{
+                  projectImageLoading[proyecto.id]
+                    ? 'Cargando imagen...'
+                    : projectImageNames[proyecto.id]
+                }}
+              </small>
+            </label>
+
+            <label class="field field--full">
+              <span>Descripción</span>
+              <input
+                type="text"
+                [value]="projectDrafts[proyecto.id]?.descripcion"
+                (input)="actualizarBorradorProyecto(proyecto.id, 'descripcion', $any($event.target).value)"
+                placeholder="Descripción breve"
+              />
+            </label>
+          </div>
+
+          <div class="row-actions">
+            <button
+              class="button button--primary"
+              type="button"
+              [disabled]="savingProjectIds[proyecto.id] || projectImageLoading[proyecto.id]"
+              (click)="guardarProyecto(proyecto)"
+            >
+              {{ savingProjectIds[proyecto.id] ? 'Guardando...' : 'Guardar' }}
+            </button>
+
+            <button
+              class="button button--danger"
+              type="button"
+              [disabled]="deletingProjectIds[proyecto.id]"
+              (click)="eliminarProyecto(proyecto)"
+            >
+              {{ deletingProjectIds[proyecto.id] ? 'Borrando...' : 'Borrar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <article *ngIf="vistaActiva === 'cuentas'" class="settings-card settings-card--detail">
+    <div class="detail-top">
+      <div class="card-header">
+        <div>
+          <p class="card-header__eyebrow">Herramientas</p>
+          <h2 class="card-header__title">
+            <span class="card-header__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  d="M10 11.25A3.75 3.75 0 1 1 10 3.75a3.75 3.75 0 0 1 0 7.5m0-6A2.25 2.25 0 1 0 10 9.75a2.25 2.25 0 0 0 0-4.5m7.25 1a.75.75 0 0 1 .75.75v1.75h1.75a.75.75 0 0 1 0 1.5H18v1.75a.75.75 0 0 1-1.5 0V10.25h-1.75a.75.75 0 0 1 0-1.5h1.75V7a.75.75 0 0 1 .75-.75M3.75 18A4.75 4.75 0 0 1 8.5 13.25h3a4.75 4.75 0 0 1 4.75 4.75.75.75 0 0 1-.75.75H4.5a.75.75 0 0 1-.75-.75m1.59-.75h9.32A3.25 3.25 0 0 0 11.5 14.75h-3a3.25 3.25 0 0 0-3.16 2.5"
+                />
+              </svg>
+            </span>
+            Añadir cuentas
+          </h2>
+        </div>
+        <p class="settings-card__subtitle">
+          Aquí puedes crear usuarios nuevos y mantener las cuentas que ya tienen acceso al hub.
+        </p>
+      </div>
+
+      <button class="button button--secondary" type="button" (click)="volverAInicio()">
+        Volver
+      </button>
+    </div>
+
+    <section class="card-section">
+      <div class="section-top">
+        <div>
+          <h3>Nueva cuenta</h3>
+          <p class="settings-card__subtitle">
+            Crea credenciales nuevas para entrar al panel privado.
+          </p>
+        </div>
+      </div>
+
+      <form class="create-grid" [formGroup]="userForm" (ngSubmit)="crearUsuario()" novalidate>
+        <label class="field">
+          <span>Nombre</span>
+          <input type="text" formControlName="name" placeholder="Nombre visible" />
+          <small *ngIf="userForm.controls.name.touched && userForm.controls.name.invalid">
+            El nombre debe tener al menos 3 caracteres.
+          </small>
+        </label>
+
+        <label class="field">
+          <span>Email</span>
+          <input type="email" formControlName="email" placeholder="correo@dominio.com" />
+          <small *ngIf="userForm.controls.email.touched && userForm.controls.email.invalid">
+            Introduce un email válido.
+          </small>
+        </label>
+
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" formControlName="password" placeholder="Mínimo 4 caracteres" />
+          <small *ngIf="userForm.controls.password.touched && userForm.controls.password.invalid">
+            La contraseña debe tener al menos 4 caracteres.
+          </small>
+        </label>
+
+        <div class="actions-row">
+          <button class="button button--primary" type="submit" [disabled]="guardandoUsuario">
+            {{ guardandoUsuario ? 'Guardando...' : 'Crear cuenta' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card-section">
+      <div class="section-top">
+        <div>
+          <h3>Usuarios actuales</h3>
+          <p class="settings-card__subtitle">
+            Tabla de cuentas activas para editar datos o eliminarlas.
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="cargandoUsuarios" class="mini-state">Cargando cuentas...</div>
+
+      <div *ngIf="!cargandoUsuarios" class="table-shell">
+        <table class="data-table" *ngIf="usuarios.length; else emptyUsers">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Nueva contraseña</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+            <tbody>
+              <tr *ngFor="let usuario of usuarios">
+              <td data-label="Nombre">
+                <input
+                  type="text"
+                  [value]="userDrafts[usuario.id]?.name"
+                  (input)="actualizarBorradorUsuario(usuario.id, 'name', $any($event.target).value)"
+                  placeholder="Nombre"
+                />
+              </td>
+              <td data-label="Email">
+                <input
+                  type="email"
+                  [value]="userDrafts[usuario.id]?.email"
+                  (input)="actualizarBorradorUsuario(usuario.id, 'email', $any($event.target).value)"
+                  placeholder="correo@dominio.com"
+                />
+              </td>
+              <td data-label="Nueva contraseña">
+                <input
+                  type="password"
+                  [value]="userDrafts[usuario.id]?.password"
+                  (input)="actualizarBorradorUsuario(usuario.id, 'password', $any($event.target).value)"
+                  placeholder="Opcional"
+                />
+              </td>
+              <td data-label="Acciones">
+                <div class="table-actions">
+                  <button
+                    class="button button--primary"
+                    type="button"
+                    [disabled]="savingUserIds[usuario.id]"
+                    (click)="guardarUsuario(usuario)"
+                  >
+                    {{ savingUserIds[usuario.id] ? 'Guardando...' : 'Guardar' }}
+                  </button>
+
+                  <button
+                    class="button button--danger"
+                    type="button"
+                    [disabled]="usuario.id === usuarioActualId || deletingUserIds[usuario.id]"
+                    (click)="eliminarUsuario(usuario.id)"
+                  >
+                    {{
+                      usuario.id === usuarioActualId
+                        ? 'Sesión activa'
+                        : deletingUserIds[usuario.id]
+                          ? 'Borrando...'
+                          : 'Eliminar'
+                    }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </article>
+
+  <ng-template #emptyUsers>
+    <div class="mini-state">No hay cuentas registradas.</div>
+  </ng-template>
+</div>

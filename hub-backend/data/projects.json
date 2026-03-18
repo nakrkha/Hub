@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "nombre": "Habita",
+    "descripcion": "Portal principal",
+    "imagen": "/images/Habita.png",
+    "url": "https://habitanakr.netlify.app/"
+  }
+]

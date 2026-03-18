@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "name": "noha",
+    "email": "noha@hub.local",
+    "passwordHash": "$2b$10$UXvMgrj2IgsX49Mc4VFeeuKEBMPGlCO7LEdnrtzq5n6VnmFDY0U..",
+    "createdAt": "2026-03-12T12:47:40.382Z"
+  }
+]

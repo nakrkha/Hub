@@ -1,0 +1,43 @@
+<section class="auth-layout auth-layout--register">
+  <div class="auth-card">
+    <h2>Crear cuenta</h2>
+    <p class="auth-card__subtitle">Completa los datos para empezar.</p>
+
+    <form [formGroup]="registerForm" (ngSubmit)="enviarFormulario()" novalidate>
+      <label class="field">
+        <span>Nombre</span>
+        <input type="text" formControlName="name" placeholder="Tu nombre" />
+        <small *ngIf="registerForm.controls.name.touched && registerForm.controls.name.invalid">
+          El nombre debe tener al menos 3 caracteres.
+        </small>
+      </label>
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="tu@email.com" />
+        <small *ngIf="registerForm.controls.email.touched && registerForm.controls.email.invalid">
+          Introduce un email válido.
+        </small>
+      </label>
+
+      <label class="field">
+        <span>Contraseña</span>
+        <input type="password" formControlName="password" placeholder="Mínimo 4 caracteres" />
+        <small *ngIf="registerForm.controls.password.touched && registerForm.controls.password.invalid">
+          La contraseña debe tener al menos 4 caracteres.
+        </small>
+      </label>
+
+      <p class="message message--error" *ngIf="mensajeError">{{ mensajeError }}</p>
+
+      <button class="button button--primary button--block" type="submit" [disabled]="enviandoFormulario">
+        {{ enviandoFormulario ? 'Creando cuenta...' : 'Registrarme' }}
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      ¿Ya tienes una cuenta?
+      <a routerLink="/login">Volver al login</a>
+    </p>
+  </div>
+</section>

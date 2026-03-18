@@ -1,0 +1,8 @@
+<svg width="640" height="400" viewBox="0 0 640 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="400" rx="40" fill="#D9E8F5"/>
+  <circle cx="180" cy="180" r="88" fill="#7CAFD6"/>
+  <circle cx="440" cy="142" r="54" fill="#A6C8E3"/>
+  <rect x="286" y="218" width="230" height="34" rx="17" fill="#6B8EAA"/>
+  <rect x="286" y="268" width="150" height="20" rx="10" fill="#9CB7CA"/>
+  <text x="90" y="334" fill="#24394D" font-family="Arial, sans-serif" font-size="38" font-weight="700">Lab Console</text>
+</svg>

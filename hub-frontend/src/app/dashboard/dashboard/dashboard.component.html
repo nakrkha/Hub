@@ -1,0 +1,55 @@
+<section class="board-page">
+  <section *ngIf="cargando" class="board-loading" aria-live="polite" aria-busy="true">
+    <span class="board-loading__spinner" aria-hidden="true"></span>
+    <p>Cargando proyectos del Board...</p>
+  </section>
+
+  <section *ngIf="!cargando && mensajeError" class="empty-state empty-state--error">
+    <p>{{ mensajeError }}</p>
+  </section>
+
+  <ng-container *ngIf="!cargando && !mensajeError">
+    <section class="board-section">
+      <div class="section-heading">
+        <div>
+          <p class="section-heading__eyebrow">Destacados</p>
+          <h2>Espacios principales</h2>
+        </div>
+        <span>{{ proyectosDestacados.length }} visibles</span>
+      </div>
+
+      <div class="feature-grid" *ngIf="proyectosDestacados.length; else emptyBoard">
+        <article *ngFor="let proyecto of proyectosDestacados" class="feature-card">
+          <div class="feature-card__media">
+            <img [src]="proyecto.imagen" [alt]="proyecto.nombre" />
+            <span class="feature-card__badge">Board</span>
+          </div>
+
+          <div class="feature-card__body">
+            <div class="feature-card__header">
+              <span class="feature-card__avatar">{{ obtenerIniciales(proyecto.nombre) }}</span>
+              <div>
+                <h3>{{ proyecto.nombre }}</h3>
+                <p>{{ obtenerDominio(proyecto.url) }}</p>
+              </div>
+            </div>
+
+            <p class="feature-card__description">
+              {{ proyecto.descripcion || 'Proyecto listo para mostrarse como acceso destacado.' }}
+            </p>
+          </div>
+
+          <button class="button button--primary" type="button" (click)="abrirProyecto(proyecto)">
+            Abrir espacio
+          </button>
+        </article>
+      </div>
+    </section>
+  </ng-container>
+
+  <ng-template #emptyBoard>
+    <section class="empty-state">
+      <p>No hay proyectos todavía. Crea el primero desde Herramientas.</p>
+    </section>
+  </ng-template>
+</section>
