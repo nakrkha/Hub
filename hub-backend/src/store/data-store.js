@@ -5,20 +5,34 @@ const dataDirectory = path.join(__dirname, '..', '..', 'data');
 const usersPath = path.join(dataDirectory, 'users.json');
 const projectsPath = path.join(dataDirectory, 'projects.json');
 const blobsStoreName = 'hub-data';
+const memoryState = {
+  users: null,
+  projects: null,
+};
 
 let blobsStorePromise = null;
+let blobsStoreUnavailable = false;
 
 function isNetlifyRuntime() {
-  return process.env.NETLIFY === 'true' || process.env.CONTEXT;
+  return process.env.NETLIFY === 'true' || Boolean(process.env.CONTEXT);
 }
 
 async function getBlobsStore() {
+  if (blobsStoreUnavailable) {
+    return null;
+  }
+
   if (!blobsStorePromise) {
-    blobsStorePromise = import('@netlify/blobs').then(({ getStore }) =>
-      getStore({
-        name: blobsStoreName,
-      })
-    );
+    blobsStorePromise = import('@netlify/blobs')
+      .then(({ getStore }) =>
+        getStore({
+          name: blobsStoreName,
+        })
+      )
+      .catch(() => {
+        blobsStoreUnavailable = true;
+        return null;
+      });
   }
 
   return blobsStorePromise;
@@ -27,8 +41,14 @@ async function getBlobsStore() {
 async function ensureDataFiles() {
   if (isNetlifyRuntime()) {
     const store = await getBlobsStore();
-    await ensureBlob(store, 'users.json', []);
-    await ensureBlob(store, 'projects.json', []);
+
+    if (store) {
+      await ensureBlob(store, 'users.json', []);
+      await ensureBlob(store, 'projects.json', []);
+      return;
+    }
+
+    await ensureMemoryData();
     return;
   }
 
@@ -53,6 +73,16 @@ async function ensureBlob(store, key, fallbackValue) {
   }
 }
 
+async function ensureMemoryData() {
+  if (memoryState.users === null) {
+    memoryState.users = await readJson(usersPath, []);
+  }
+
+  if (memoryState.projects === null) {
+    memoryState.projects = await readJson(projectsPath, []);
+  }
+}
+
 async function readJson(filePath, fallbackValue) {
   try {
     const rawContent = await fs.readFile(filePath, 'utf-8');
@@ -68,18 +98,36 @@ async function writeJson(filePath, data) {
 
 async function readBlob(key, fallbackValue) {
   const store = await getBlobsStore();
+
+  if (!store) {
+    return fallbackValue;
+  }
+
   const content = await store.get(key, { type: 'json', consistency: 'strong' });
   return content ?? fallbackValue;
 }
 
 async function writeBlob(key, data) {
   const store = await getBlobsStore();
+
+  if (!store) {
+    return false;
+  }
+
   await store.setJSON(key, data);
+  return true;
 }
 
 async function readUsers() {
   if (isNetlifyRuntime()) {
-    return readBlob('users.json', []);
+    const users = await readBlob('users.json', null);
+
+    if (users !== null) {
+      return users;
+    }
+
+    await ensureMemoryData();
+    return [...memoryState.users];
   }
 
   return readJson(usersPath, []);
@@ -87,7 +135,12 @@ async function readUsers() {
 
 async function writeUsers(users) {
   if (isNetlifyRuntime()) {
-    await writeBlob('users.json', users);
+    const saved = await writeBlob('users.json', users);
+
+    if (!saved) {
+      memoryState.users = [...users];
+    }
+
     return;
   }
 
@@ -96,7 +149,14 @@ async function writeUsers(users) {
 
 async function readProjects() {
   if (isNetlifyRuntime()) {
-    return readBlob('projects.json', []);
+    const projects = await readBlob('projects.json', null);
+
+    if (projects !== null) {
+      return projects;
+    }
+
+    await ensureMemoryData();
+    return [...memoryState.projects];
   }
 
   return readJson(projectsPath, []);
@@ -104,7 +164,12 @@ async function readProjects() {
 
 async function writeProjects(projects) {
   if (isNetlifyRuntime()) {
-    await writeBlob('projects.json', projects);
+    const saved = await writeBlob('projects.json', projects);
+
+    if (!saved) {
+      memoryState.projects = [...projects];
+    }
+
     return;
   }
 
